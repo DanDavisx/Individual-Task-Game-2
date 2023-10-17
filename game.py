@@ -167,7 +167,6 @@ def print_exit(direction, leads_to):
 
 
 def print_menu(exits, room_items, inv_items):
-    # ^ exits, room_items, inv_items are variables passed as function arguments
     """This function displays the menu of available actions to the player. The
     argument exits is a dictionary of exits as exemplified in map.py. The
     arguments room_items and inv_items are the items lying around in the room
@@ -209,6 +208,7 @@ def print_menu(exits, room_items, inv_items):
 
     for item in inv_items:  # loops through items in the inventory
         print("DROP", item["id"].upper(), "to drop", item["name"] + ".")
+        print("READ", item["id"].upper(), "to read the description of", item["name"] + ".RE")
         # ^ prints the above string
 
     print("What do you want to do?")
@@ -233,6 +233,12 @@ def is_valid_exit(exits, chosen_exit):
     return chosen_exit in exits
 
 
+def total_inventory_weight(inventory):
+    # ^ new function to get the current weight of items in players inventory
+    return sum(item["weight"] for item in inventory)
+    # ^ adds up the "weight" value for each item in the inventory
+
+
 def execute_go(direction):
     """This function, given the direction (e.g. "south") updates the current room
     to reflect the movement of the player if the direction is a valid exit
@@ -255,17 +261,25 @@ def execute_take(item_id):
     there is no such item in the room, this function prints
     "You cannot take that."
     """
-    global inventory, current_room
+
+    max_weight = 2.0
+
     item_taken = None  # item_taken variable is set as none
     for item in current_room["items"]:  # loops through the items in current_room (player.py)
         if item["id"] == item_id:
             # ^ if the item id is equal to item_id that the user tried to take
-            item_taken = item  # item taken becomes the item selected (not None)
+            item_taken = item  # item taken becomes the item (not None)
             break  # break ends the loop
     if item_taken is not None:
-        current_room["items"].remove(item_taken)  # removes the item from the current_room
-        inventory.append(item_taken)  # appends this to the player's inventory (player.py)
-        print("You took", item_taken["name"] + ".")
+        # print(item_taken) used this to test when it wasn't working
+        if total_inventory_weight(inventory) + item_taken["weight"] <= max_weight:
+            # ^ if the current inventory weight of the player plus the item being taken weight are less than max_weight
+            current_room["items"].remove(item_taken)  # removes the item from the current_room
+            inventory.append(item_taken)  # appends this to the player's inventory (player.py)
+            print("You took", item_taken["name"] + ".")
+            print("Your current inventory weight is: ", total_inventory_weight(inventory), "kg /", max_weight, "kg.")
+        else:
+            print("You would be too heavy if you took that.")
     else:
         print("You cannot take that.")
 
@@ -275,6 +289,9 @@ def execute_drop(item_id):
     player's inventory to list of items in the current room. However, if there is
     no such item in the inventory, this function prints "You cannot drop that."
     """
+
+    max_weight = 3.0
+
     item_dropped = None  # item_dropped variable is set to None
     for item in inventory:
         if item["id"] == item_id:  # if the item id is equal to item_id
@@ -285,8 +302,22 @@ def execute_drop(item_id):
         current_room["items"].append(item_dropped)
         # ^ append the item into the current room's room item dictionary
         print("You dropped", item_dropped["name"] + ".")
+        print("Your current inventory weight is: ", total_inventory_weight(inventory), "kg /", max_weight, "kg.")
     else:
         print("You cannot drop that.")
+
+
+def execute_read(item_id):
+
+    item_read = None
+    for item in inventory:
+        if item["id"] == item_id:
+            item_read = item
+            break
+    if item_read is not None:
+        print(item_read["description"])
+    else:
+        print("You cannot read that.")
 
 
 def execute_command(command):
@@ -317,6 +348,12 @@ def execute_command(command):
             execute_drop(command[1])
         else:
             print("Drop what?")
+
+    elif command[0] == "read":
+        if len(command) > 1:
+            execute_read(command[1])
+        else:
+            print("Read what?")
 
     else:
         print("This makes no sense.")
