@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-from map import rooms
 from player import *
 from items import *
 from gameparser import *
@@ -276,7 +275,6 @@ def execute_drop(item_id):
     player's inventory to list of items in the current room. However, if there is
     no such item in the inventory, this function prints "You cannot drop that."
     """
-    global inventory, current_room  # this is nearly the same as above, but reversed.
     item_dropped = None  # item_dropped variable is set to None
     for item in inventory:
         if item["id"] == item_id:  # if the item id is equal to item_id
