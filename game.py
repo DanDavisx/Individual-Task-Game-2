@@ -134,6 +134,9 @@ def print_room(room):
         print_room_items(room)
         # ^ calls print_room_items which prints the items that are in the room
 
+    max_weight = 2.6
+    print("Your current inventory weight is: ", total_inventory_weight(inventory), "kg /", max_weight, "kg.")
+
 
 def exit_leads_to(exits, direction):
     """This function takes a dictionary of exits and a direction (a particular
@@ -208,8 +211,11 @@ def print_menu(exits, room_items, inv_items):
 
     for item in inv_items:  # loops through items in the inventory
         print("DROP", item["id"].upper(), "to drop", item["name"] + ".")
-        print("READ", item["id"].upper(), "to read the description of", item["name"] + ".RE")
-        # ^ prints the above string
+
+    for item in inv_items:
+        # ^ I have done the exact same for loop again, so it doesn't print DROP, READ, DROP, READ etc.
+        print("READ", item["id"].upper(), "to read the description of", item["name"] + ".")
+
 
     print("What do you want to do?")
 
@@ -262,7 +268,7 @@ def execute_take(item_id):
     "You cannot take that."
     """
 
-    max_weight = 2.0
+    max_weight = 2.6
 
     item_taken = None  # item_taken variable is set as none
     for item in current_room["items"]:  # loops through the items in current_room (player.py)
@@ -277,7 +283,6 @@ def execute_take(item_id):
             current_room["items"].remove(item_taken)  # removes the item from the current_room
             inventory.append(item_taken)  # appends this to the player's inventory (player.py)
             print("You took", item_taken["name"] + ".")
-            print("Your current inventory weight is: ", total_inventory_weight(inventory), "kg /", max_weight, "kg.")
         else:
             print("You would be too heavy if you took that.")
     else:
@@ -290,7 +295,7 @@ def execute_drop(item_id):
     no such item in the inventory, this function prints "You cannot drop that."
     """
 
-    max_weight = 3.0
+    max_weight = 2.6
 
     item_dropped = None  # item_dropped variable is set to None
     for item in inventory:
@@ -302,20 +307,21 @@ def execute_drop(item_id):
         current_room["items"].append(item_dropped)
         # ^ append the item into the current room's room item dictionary
         print("You dropped", item_dropped["name"] + ".")
-        print("Your current inventory weight is: ", total_inventory_weight(inventory), "kg /", max_weight, "kg.")
     else:
         print("You cannot drop that.")
 
 
 def execute_read(item_id):
 
-    item_read = None
+    item_read = None  # pretty much a copy of the above ones
     for item in inventory:
         if item["id"] == item_id:
             item_read = item
             break
     if item_read is not None:
         print(item_read["description"])
+        print("This item weights: ", item_read["weight"], "kg.")
+        #  ^ tells the player how much the item weighs
     else:
         print("You cannot read that.")
 
