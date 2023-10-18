@@ -57,18 +57,7 @@ item_handbook = {
 
     "name": "a student handbook",
 
-    "description":
-    """
-    The cashier at the office has never been tipped before, a tip would surely raise their 
-    spirit a little.
-        
-    The last time you saw the receptionist he told you to get him a pen.
-        
-    Also, word is that both MJ and Simon have been in dire need of a laptop as of late.
-    Do with that what you will.
-        
-    Go and pay your tutor a visit, he's run out of something.    
-    """,
+    "description": "This student handbook explains everything. Seriously.",
 
     "weight": 2.0
 }

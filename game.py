@@ -216,7 +216,6 @@ def print_menu(exits, room_items, inv_items):
         # ^ I have done the exact same for loop again, so it doesn't print DROP, READ, DROP, READ etc.
         print("READ", item["id"].upper(), "to read the description of", item["name"] + ".")
 
-
     print("What do you want to do?")
 
 
@@ -312,7 +311,6 @@ def execute_drop(item_id):
 
 
 def execute_read(item_id):
-
     item_read = None  # pretty much a copy of the above ones
     for item in inventory:
         if item["id"] == item_id:
