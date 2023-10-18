@@ -267,7 +267,7 @@ def execute_take(item_id):
     "You cannot take that."
     """
 
-    max_weight = 2.6
+    max_weight = 2.6  # testing
 
     item_taken = None  # item_taken variable is set as none
     for item in current_room["items"]:  # loops through the items in current_room (player.py)
